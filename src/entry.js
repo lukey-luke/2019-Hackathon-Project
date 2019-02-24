@@ -10,6 +10,7 @@
 var THREE = require('three');
 require('three-fly-controls')(THREE);
 import SeedScene from './objects/Scene.js';
+import './css/foo.css'; // fuck off
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera();
@@ -53,6 +54,9 @@ const onAnimationFrameHandler = (timeStamp) => {
     let metadata = getObjectMetaData(intersection_uuid);
     displayMetadataInDOM(metadata);
   }
+  else {
+    document.getElementById('info').innerHTML = '';
+  }
   renderer.render(scene, camera);
   controls.update();
   seedScene.update && seedScene.update(timeStamp);
@@ -75,7 +79,6 @@ document.body.style.margin = 0;
 document.body.appendChild( renderer.domElement );
 
 let text_object = document.createElement('div');
-// text_object.setAttribute("id", "info");
 let absolute_text_object = `<div id="info" style="color: white; position: absolute; top: 10px; width: 100%; text-align: center; z-index: 100; display:block;">
                             <div>`;
 text_object.innerHTML = absolute_text_object;
@@ -83,7 +86,7 @@ document.body.appendChild( text_object );
 
 function displayMetadataInDOM(metadata) {
   let templateLiteral = `
-    <h1>${metadata["name"]}</h1>
+    <h1 class="foo">${metadata["name"]}</h1>
     <h2>${metadata["population"]}</h2>
     <h3>${metadata["atmosphere"]}</h3>
     <h4>${metadata["primaryLanguage"]}</h4>
@@ -91,7 +94,6 @@ function displayMetadataInDOM(metadata) {
   `;
   console.log('templateLiteral: ', templateLiteral);
   document.getElementById('info').innerHTML = templateLiteral;
-  //code
 }
 
 function printSceneObjects() {
