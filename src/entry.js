@@ -7,7 +7,6 @@
  * 
  */
 
-// import { WebGLRenderer, PerspectiveCamera, Scene, Vector3 } from 'three'; // other import method easier?
 var THREE = require('three');
 require('three-fly-controls')(THREE);
 import SeedScene from './objects/Scene.js';
@@ -16,6 +15,16 @@ const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera();
 const renderer = new THREE.WebGLRenderer({antialias: true});
 const seedScene = new SeedScene();
+
+let uuid_to_model_name = {
+  "44B13A6C-7AEA-4EB2-8CA1-5608584CFF47": "land",
+  "598453FB-59C1-4A8B-95CD-17961CEABC50":"flower",
+}
+
+const collisionDetector = new THREE.Raycaster();
+collisionDetector.near = 0;
+collisionDetector.far = 5;
+const straight_vec = new THREE.Vector2( 0, 0 );
 
 // scene
 scene.add(seedScene);
@@ -31,6 +40,17 @@ renderer.setClearColor(0x041320, 1);
 
 // render loop
 const onAnimationFrameHandler = (timeStamp) => {
+  collisionDetector.setFromCamera(straight_vec, camera);
+  let intersections = collisionDetector.intersectObjects(seedScene.children, true);
+  if (intersections.length) {
+    let intersection = intersections[0].object;
+    if (intersection.parent) {
+      intersection = intersection.parent;
+    }
+    let intersection_uuid = intersection.uuid;
+    let model_name = uuid_to_model_name[intersection_uuid]
+    console.log('model_name: ', model_name);
+  }
   renderer.render(scene, camera);
   controls.update();
   seedScene.update && seedScene.update(timeStamp);
@@ -52,3 +72,9 @@ window.addEventListener('resize', windowResizeHanlder);
 document.body.style.margin = 0;
 document.body.appendChild( renderer.domElement );
 
+function printSceneObjects() {
+  seedScene.children.forEach(function (elem) {
+    console.log('elem: ', elem);
+    console.log('elem.position: ', elem.position);
+  });
+}
