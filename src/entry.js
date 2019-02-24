@@ -99,6 +99,7 @@ function displayMetadataInDOM(metadata) {
         <a href="${metadata["url"]}" style="text-decoration: none;">
           <h1 class="info-large">
           ${metadata["name"]}<img style="padding-left: 10px; height: 20px;" src="https://www.iconsdb.com/icons/preview/white/external-link-xxl.png"/>
+          <div style="text-align: right;"><img style="max-width: 240px; max-height: 140px;" src="${metadata["image"]}"></div>
           </h1>
         </a>
       </div>
@@ -140,6 +141,7 @@ function getObjectMetaData(uuid) {
     "atmosphere": "breathable",
     "primaryLanguage": "Ewokese",
     "diameter": 4900,
+    "image": "https://content.pulse.ea.com/content/legacy/starwars-ea-com/en_US/starwars/battlefront/news-articles/the-star-wars-battlefront-planets--creating-endor/_jcr_content/featuredImage/renditions/rendition1.img.jpg",
     "url": "google.com",
   };
 }
