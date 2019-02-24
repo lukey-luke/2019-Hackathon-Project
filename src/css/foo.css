@@ -1,3 +1,47 @@
 .foo {
     background-color: blueviolet;
 }
+
+.info-wrapper {
+    background-color: #25435B;
+    border: 1px solid #D9EDFF;
+    border-radius: 5px;
+    color: #D9EDFF;
+    position: absolute;
+    top: 60px;
+    right: 60px;
+    width: 40%;
+}
+.fade-in {
+  opacity: 1;
+  animation-name: fadeInOpacity;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in;
+  animation-duration: .2s;
+}
+
+.info-large, .info-small {
+    background-color: rgb(58, 92, 119);
+}
+.info-large {
+    color: white;
+    font-size: 2rem;
+    text-decoration: none !important;
+}
+.info-small {
+    font-size: 1.25rem;
+    padding: 12px;
+}
+.pad-small {
+    border-radius: 3px;
+    padding: 6px;
+}
+
+@keyframes fadeInOpacity {
+  0% {
+    opacity: 0;
+  }
+  100% {
+  opacity: 1;
+  }
+}

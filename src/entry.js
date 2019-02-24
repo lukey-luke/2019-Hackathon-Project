@@ -10,7 +10,7 @@
 var THREE = require('three');
 require('three-fly-controls')(THREE);
 import SeedScene from './objects/Scene.js';
-import './css/foo.css'; // fuck off
+import './css/foo.css';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera();
@@ -25,6 +25,7 @@ const collisionDetector = new THREE.Raycaster();
 collisionDetector.near = 0;
 collisionDetector.far = 5;
 const straight_vec = new THREE.Vector2( 0, 0 );
+let haveInfoDisplayed = false; // global variables are evil
 
 // scene
 scene.add(seedScene);
@@ -47,14 +48,18 @@ const onAnimationFrameHandler = (timeStamp) => {
     if (intersection.parent) {
       intersection = intersection.parent;
     }
-    let intersection_uuid = intersection.uuid;
-    let model_name = uuid_to_model_name[intersection_uuid]
-    console.log('model_name: ', model_name);
-    console.log('metadata: ', getObjectMetaData(intersection_uuid));
-    let metadata = getObjectMetaData(intersection_uuid);
-    displayMetadataInDOM(metadata);
+    if (!haveInfoDisplayed) {
+      haveInfoDisplayed = true;
+      let intersection_uuid = intersection.uuid;
+      let model_name = uuid_to_model_name[intersection_uuid]
+      console.log('model_name: ', model_name);
+      console.log('metadata: ', getObjectMetaData(intersection_uuid));
+      let metadata = getObjectMetaData(intersection_uuid);
+      displayMetadataInDOM(metadata);
+    }
   }
   else {
+    haveInfoDisplayed = false;
     document.getElementById('info').innerHTML = '';
   }
   renderer.render(scene, camera);
@@ -79,21 +84,41 @@ document.body.style.margin = 0;
 document.body.appendChild( renderer.domElement );
 
 let text_object = document.createElement('div');
-let absolute_text_object = `<div id="info" style="color: white; position: absolute; top: 10px; width: 100%; text-align: center; z-index: 100; display:block;">
-                            <div>`;
+let absolute_text_object = `<div id="info"><div>`;
 text_object.innerHTML = absolute_text_object;
 document.body.appendChild( text_object );
 
+let lastDisplay = new Date();
 function displayMetadataInDOM(metadata) {
-  let templateLiteral = `
-    <h1 class="foo">${metadata["name"]}</h1>
-    <h2>${metadata["population"]}</h2>
-    <h3>${metadata["atmosphere"]}</h3>
-    <h4>${metadata["primaryLanguage"]}</h4>
-    <h5>${metadata["diameter"]}</h5>
-  `;
-  console.log('templateLiteral: ', templateLiteral);
-  document.getElementById('info').innerHTML = templateLiteral;
+  let displayTime = new Date();
+  if (displayTime > (lastDisplay.getTime()+4000) ) {
+    let templateLiteral = `
+    <div class="fade-in" style="width: 100px; border: 2px solid #D9EDFF; transform: translate(618px, -400px) rotate(-37deg);"></div>
+    <div class="info-wrapper fade-in">
+      <div class="pad-small">
+        <a href="${metadata["url"]}" style="text-decoration: none;">
+          <h1 class="info-large">
+          ${metadata["name"]}<img style="padding-left: 10px; height: 20px;" src="https://www.iconsdb.com/icons/preview/white/external-link-xxl.png"/>
+          </h1>
+        </a>
+      </div>
+      <div class="pad-small">
+        <div class="info-small">Population: ${metadata["population"]}</div>
+      </div>
+      <div class="pad-small">
+        <div class="info-small">Atmosphere: ${metadata["atmosphere"]}</div>
+      </div>
+      <div class="pad-small">
+        <div class="info-small">Primary Language: ${metadata["primaryLanguage"]}</div>
+      </div>
+      <div class="pad-small">
+        <div class="info-small">Planet diameter: ${metadata["diameter"]}km</div>
+      </div>
+    </div>
+    `;
+    document.getElementById('info').innerHTML = templateLiteral;
+    lastDisplay = displayTime;
+  }
 }
 
 function printSceneObjects() {
@@ -115,5 +140,6 @@ function getObjectMetaData(uuid) {
     "atmosphere": "breathable",
     "primaryLanguage": "Ewokese",
     "diameter": 4900,
+    "url": "google.com",
   };
 }
